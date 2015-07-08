@@ -1,0 +1,122 @@
+<head>
+  <title>Config</title>
+</head>
+
+<body>
+
+  {{#if selectedDevice}}
+    <div id="ConnectPage">
+      {{#with selectedDevice}}
+        {{> deviceConnection}}
+      {{/with}}
+    </div>
+  {{else}}
+    <div id="ListPage">
+        <div>
+            <h1>Devices</h1>
+            <button type="button" id="refreshButton" class="btn btn-lg btn-primary">Refresh</button>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>RSSI</th>
+                    <th>Connect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {{#each devices}}
+                  {{> device}}
+                {{/each}}
+                </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+  {{/if}}
+
+</body>
+
+<template name="device">
+    <tr>
+      <td>{{id}}</td>
+      <td>{{name}}</td>
+      <td>{{rssi}}</td>
+      <td><button type="button" id="connectButton" class="btn btn-lg btn-default">Connect</button></td>
+    </tr>
+</template>
+
+<template name="deviceConnection">
+  <h1>Device {{id}}</h1>
+
+  <button type="button" id="cancelButton" class="btn btn-lg btn-danger">Cancel</button>
+
+  {{#if isConnected}}
+    {{#each services}}
+      {{> service}}
+    {{/each}}
+  {{else}}
+  <div class="alert alert-info" role="alert">
+        <strong>Connecting!</strong>
+  </div>
+  {{/if}}
+
+</template>
+
+
+<template name="service">
+    <div class="panel panel-info">
+        <div class="panel-heading">
+        <h3 class="panel-title">{{name}}</h3>
+        </div>
+        <div class="panel-body">
+        {{#each charsArray}}
+            {{> char}}
+        {{/each}}
+        </div>
+    </div>
+
+</template>
+
+<template name="char">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{name}}</h3>
+            </div>
+            <div class="panel-body">
+                {{#if isReadable}}
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id="Read" type="button">Read</button>
+                    </span>
+                      <input type="text" class="form-control" value="{{value}}" disabled>
+                    {{#if isLink value}}
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id="OpenLink" type="button" value={{value}}>Go</button>
+                    </span>
+                    {{/if}}
+                  </div>
+                </div>
+                {{/if}}
+
+                {{#if isWritable}}
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id="Write" type="button">Write</button>
+                    </span>
+                    <input type="text" id="WriteInput" class="form-control" placeholder="New Value" value="{{newValue}}">
+                  </div>
+                </div>
+                {{/if}}
+            </div>
+          </div>
+        </div>
+    </div>
+</template>
